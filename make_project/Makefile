@@ -57,6 +57,83 @@ utils.o : utils.c defs.h
 
 		cc -c utils.c
 
+# order-only prerequisites
+OBJDIR := objdir
+OBJ := $(addprefix $(OBJDIR)/,foo.o bar.o baz.o)
+
+$(OBJDIR)/%.o : %.c
+		$(COMPILE.c) $(OUTPUT_OPTION) $<
+
+all : $(OBJS)
+
+$(OBJS) : | $(OBJDIR)
+
+$(OBJDIR) :
+		mkdir $(OBJDIR)
+
+# It is a good practice to have a cleanup target action in our makefile,
+# any action we don’t want to run by default should not be placed at the top of the targets.
+# We use .PHONY : target action,
+# it causes Make to not get confused by an actual file called or named as the target.
+
+.PHONY : clean
 clean :
 		rm edit $(objects)
 
+		# using wildcards, delete all the object files in current working directory
+		rm -f *.o
+
+# print all the ‘.c’ files that have changed since the last time you printed them
+# It uses an empty target file "print", empty target files used to record events
+# The automatic variable ‘$?’ is used to print only those files that have changed
+.PHONY : print
+print : *.c
+		lpr -p $?
+		touch print
+
+#################################################################################
+#### Wildcard, VPATH vairable, vpath directive and automatic vairables
+#################################################################################
+
+# - match every files in the working directory that has the .o file extension
+# Objects = *.o, it will be taken as the string “*.o”, to make the expansion happen instead use
+Objects := $(wildcard *.o)
+
+
+# Search Directories for Prerequisites - VPATH variable
+# It is a variable used by make to automatically search directories for prerequisites
+# You specify a list of directories that make should search.
+# If a file that is listed as a target or prerequisites does not exist in the current directory,
+# make searches the directories listed in VPATH for a file with that name.
+#  make searches the 2 directories in the order they are declared
+VPATH = src:../headers
+
+# Also, there is the vpath directive - it allows you to specify a search path for a particular class of file names
+# Below tells make to look for any prerequisite whose name ends in .h in the directory ../headers
+# if the file is not found in the current directory.
+vpath %.h ../headers
+
+# look for a file ending in ‘.c’ in foo, then blish, then bar, while
+vpath %.c foo
+vpath % blish
+vpath %.c bar
+
+# look for a file ending in ‘.c’ in foo, then bar, then blish.
+vpath %.c foo:bar
+vpath % blish
+
+
+# Writing Recipes with Directory Search and automatic variables
+# $^ - automatic variables, the value is a list of all the prerequisites of the rule, including the name of the directories in which they are found
+# $@ - automatic variable that has the value as the target of the rule.
+# $< - is just the first prerequisite
+
+# The below rule means, compile using the CFLAGS environment variable the prerequisites (foo.c)-$^ and output as foo.o - $@(object file target)
+foo.o : foo.c
+		cc -c $(CFLAGS) $^ -o $@
+
+# Below rule uses a VPATH variable to indicate where to search the prerequisites id can't be found in current directory.
+# uses the environment vairable CFLAGS to compile the first prerequisite foo.c($<) and output as the target foo.o($@)
+VPATH = src:../headers
+foo.o : foo.c defs.h hack.h
+		cc -c $(CFLAGS) $< -o $@

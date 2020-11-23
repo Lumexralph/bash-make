@@ -12,4 +12,4 @@ done
 echo foss.org.my ;
 echo debian.org ;
 echo freenetproject.org ;
-} | parallel -k traceroute
+} | parallel -k traceroute # delivers the output in listed order
