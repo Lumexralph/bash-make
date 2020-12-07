@@ -75,13 +75,15 @@ $(OBJDIR) :
 # any action we don’t want to run by default should not be placed at the top of the targets.
 # We use .PHONY : target action,
 # it causes Make to not get confused by an actual file called or named as the target.
+GEN_ORM_FILES := $(wildcard **/gen_orm_*.go)
 
 .PHONY : clean
 clean :
-		rm edit $(objects)
+		# rm edit $(objects)
 
 		# using wildcards, delete all the object files in current working directory
-		rm -f *.o
+		echo $(GEN_ORM_FILES)
+		rm -f $(GEN_ORM_FILES)
 
 # print all the ‘.c’ files that have changed since the last time you printed them
 # It uses an empty target file "print", empty target files used to record events
