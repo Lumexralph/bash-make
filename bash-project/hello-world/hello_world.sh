@@ -13,7 +13,7 @@ set -o nounset
 
 main() {
   # A string variable containing only the FIRST argument passed to the script,
-  # you can use input="$@" to get a string with ALL arguments
+  # you can use input="$@" (main "Hello, World!" "Hello, Lummy")to get a string with ALL arguments
   input=$1
 
   # Add your code here
@@ -22,4 +22,4 @@ main() {
 
 # Calls the main function passing all the arguments to it via '$@'
 # The argument is in quotes to prevent whitespace issues
-main "Hello, World!"
+main "Hello, World!" "Hello, Lummy"
