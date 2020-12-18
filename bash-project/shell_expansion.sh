@@ -44,3 +44,59 @@ chown root /usr/{ucb/{ex,edit},lib/{ex?.?*,how_ex}}
 ##########################################################
 # Shell Parameter Expansion
 ##########################################################
+
+# The ‘$’ character introduces parameter expansion, command substitution, or arithmetic expansion
+# The basic form of parameter expansion is ${parameter}, The value of parameter is substituted.
+
+# ${parameter:−word}
+# If parameter is unset or null, the expansion of word is substituted. Otherwise, the value of parameter is substituted.
+
+# ${parameter:=word}
+# If parameter is unset or null, the expansion of word is assigned to parameter. The value of parameter is then substituted. Positional parameters and special parameters may not be assigned to in this way.
+
+# ${parameter:?word}
+# If parameter is null or unset, the expansion of word (or a message to that effect if word is not present) is written to the standard error and the shell, if it is not interactive, exits. Otherwise, the value of parameter is substituted.
+
+# ${parameter:+word}
+# If parameter is null or unset, nothing is substituted, otherwise the expansion of word is substituted.
+
+# ${parameter:offset} ${parameter:offset:length}
+# This is referred to as Substring Expansion. It expands to up to length charac- ters of the value of parameter starting at the character specified by offset.
+
+# If length is omitted, it expands to the substring of the value of parameter starting at the character specified by offset and extending to the end of the value.
+# If offset evaluates to a number less than zero, the value is used as an offset in characters from the end of the value of parameter.
+# If length evaluates to a number less than zero, it is interpreted as an offset in characters from the end of the value of parameter rather than a number of characters,
+# and the expansion is the characters between offset and that result.
+
+string=01234567890abcdefgh
+echo ${string:7} # => 7890abcdefgh . offset is from 7th character
+
+echo ${string:7:0} # => ""(empty string), Offset is at 7th character but length of 0 character
+
+echo ${string:7:2} # => 78 . Offset is at 7th character but length of 2 characters
+
+echo ${string:7:-2} # => 7890abcdef, Offset is at 7th character but length of -2, removes 2 characters from the right
+
+echo ${string: -7} # => bcdefgh, Offset is a negative value, gets the characters from the right
+
+echo ${string: -7:0} # => ""(empty string), Offset is a negative value, gets the characters from the right but a zero length
+
+echo ${string: -7:2} # => bc, Offset is a negative value, gets the characters from the right but length of 2 characters
+
+echo ${string: -7:-2} # => bcdef, Offset is a negative value, gets the characters from the right but length of -2, removes 2 characters from the right
+
+
+set -- 01234567890abcdefgh # => I don't know so much what this means but it sets a variable (1) : This is a string
+
+echo ${1:7} # => 7890abcdefgh
+echo ${1:7:0} # =>
+echo ${1:7:2} # => 78
+echo ${1:7:-2} # => 7890abcdef
+
+# Using positional parameters
+
+set -- 1 2 3 4 5 6 7 8 9 0 a b c d e f g h # => This is an array
+
+echo ${@} # => 1 2 3 4 5 6 7 8 9 0 a b c d e f g h
+
+echo ${@:7} # => 7 8 9 0 a b c d e f g h
