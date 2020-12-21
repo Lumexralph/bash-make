@@ -22,4 +22,4 @@ reverse_string() {
 }
 
 reverse_string "$@" # the parameters from the standard input or command line
-# run => bats reverse_string_test.sh
+# run => bats reverse_string_test.sh$

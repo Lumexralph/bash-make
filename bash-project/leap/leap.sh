@@ -2,7 +2,7 @@
 
 validate_input() {
      # check the number of arguments supplied
-    if [[ (( "$#" = 0 )) || (( "$#" > 1 )) ]]; then
+    if [[ (( "$#" = 0 )) || (( "$#" -gt 1 )) ]]; then
         return 1;
 
     # input should not be alphanumeric, the input will be seen as a string
