@@ -15,7 +15,7 @@ two_fer() {
         input=$1;
     fi
 
-    echo "One for "$input", one for me."
+    echo "One for $input, one for me."
 }
 
 two_fer "$@"
